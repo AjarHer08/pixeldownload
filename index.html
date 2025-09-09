@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PixelDrain Downloader - Unduh Langsung!</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #7f7fd5, #86a8e7, #91eae4);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            color: #333;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            width: 100%;
+            max-width: 500px;
+            text-align: center;
+        }
+        h1 {
+            margin-top: 0;
+            color: #2c3e50;
+        }
+        input {
+            width: 100%;
+            padding: 12px;
+            margin: 15px 0;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+        button {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            font-size: 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        button:hover {
+            background: #2980b9;
+        }
+        .error {
+            color: #e74c3c;
+            margin: 10px 0;
+            font-weight: bold;
+        }
+        .success {
+            color: #27ae60;
+            margin: 10px 0;
+            font-weight: bold;
+        }
+        footer {
+            margin-top: 20px;
+            font-size: 14px;
+            color: #7f8c8d;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>⬇️ PixelDrain Downloader</h1>
+        <p>Tempel link PixelDrain, lalu unduh langsung tanpa iklan!</p>
+
+        <input type="text" id="urlInput" placeholder="https://pixeldrain.com/u/..." autocomplete="off">
+
+        <button onclick="processDownload()">Unduh Sekarang</button>
+
+        <div id="message"></div>
+
+        <footer>
+            Dibuat dengan ❤️ | Tidak menyimpan data apapun
+        </footer>
+    </div>
+
+    <script>
+        function processDownload() {
+            const urlInput = document.getElementById('urlInput').value.trim();
+            const messageDiv = document.getElementById('message');
+            messageDiv.innerHTML = '';
+            messageDiv.className = '';
+
+            // Validasi dasar
+            if (!urlInput) {
+                messageDiv.className = 'error';
+                messageDiv.textContent = '⚠️ Harap masukkan link PixelDrain!';
+                return;
+            }
+
+            // Ekstrak FILE_ID dari URL
+            let fileId = '';
+
+            // Format: https://pixeldrain.com/u/FILE_ID
+            if (urlInput.includes('/u/')) {
+                const parts = urlInput.split('/u/');
+                if (parts.length > 1) {
+                    fileId = parts[1].split('?')[0].split('#')[0].split('&')[0];
+                }
+            }
+            // Format: https://pixeldrain.com/api/file/FILE_ID
+            else if (urlInput.includes('/api/file/')) {
+                const parts = urlInput.split('/api/file/');
+                if (parts.length > 1) {
+                    fileId = parts[1].split('?')[0].split('#')[0].split('&')[0];
+                }
+            }
+
+            if (!fileId) {
+                messageDiv.className = 'error';
+                messageDiv.textContent = '❌ Format link tidak valid. Contoh: https://pixeldrain.com/u/abc123';
+                return;
+            }
+
+            // Tampilkan pesan sukses
+            messageDiv.className = 'success';
+            messageDiv.innerHTML = `✅ File ID: <strong>${fileId}</strong><br>Mengarahkan ke unduhan...`;
+
+            // Redirect ke direct download
+            const downloadUrl = `https://pixeldrain.com/api/file/${fileId}?download`;
+            setTimeout(() => {
+                window.location.href = downloadUrl;
+            }, 1000);
+        }
+
+        // Enter key support
+        document.getElementById('urlInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                processDownload();
+            }
+        });
+    </script>
+</body>
+</html>
